@@ -7,7 +7,7 @@
 Just a repo with my dotfiles and their backups.
 ## Not intended for installation for now. Just used as a backup
 
-## Structure
+## Project structure
 
 ```
 .
