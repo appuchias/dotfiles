@@ -15,46 +15,45 @@
 
 
 # Fun
-alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
-alias sl="sl -lea"
-
-# Typos
-alias gti="git"
+# alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
+alias sl='sl -lea'
 
 # Improvements
 alias cat='bat'
 alias ls='lsd'
+alias vim='nvim'
+alias rm='trash'
+
+# Efficiency
 alias la='ls -a'
 alias ll='ls -lFh'
 alias lal='ls -alFh'
 alias lt='ls --tree'
 alias ltl='ls -l --tree'
-alias latl='ls -al --tree'
-alias vim="nvim"
-alias rm='trash'
+alias latl='ls -al --tree --depth 2'
+alias g='git'
+alias gs='git status'
 
 # Tools aliases
-alias spdt="speedtest"
-alias hsb="headsetcontrol -b"
-alias shjk="ssh root@shark"
-alias sherlock=". ~/scripts/sherlock/venv/bin/activate.fish && python ~/scripts/sherlock/sherlock/sherlock.py --csv --print-found"
-alias bundle="bundle-2.7"
-alias icat="kitty +kitten icat"
+alias spdt='speedtest'
+alias hsb='headsetcontrol -b'
+alias shjk='ssh root@shark'
+alias sherlock='. ~/opt/tools/sherlock/venv/bin/activate.fish && python ~/scripts/sherlock/sherlock/sherlock.py --csv --print-found'
+alias icat='kitty +kitten icat'
 
 # Filesystem
-alias mkdirs="mkdir -p"
-alias size_disk="sudo du /* --exclude proc -schx"
-alias size_snapshot="sudo du /timeshift/snapshots -schx"
+alias mkdirs='mkdir -p'
+alias size_disk='sudo du /* --exclude proc -schx'
 
 # System
-alias fucking="sudo"
-alias please="sudo"
-alias sctl="sudo systemctl"
-alias sfl="sudo fdisk -l"
-alias ports="netstat -lntu | grep LISTEN"
-alias newmirrors="sudo pacman-mirrors -at 1 -c Spain Portugal France Germany Belgium Austria Denmark Global Greece Hungary Poland Switzerland Ukraine United_Kingdom"
-alias clean="clear && colorscript -r"
+alias fucking='sudo'
+alias please='sudo'
+alias sctl='sudo systemctl'
+alias sfl='sudo fdisk -l'
+alias ports='netstat -lntu | grep LISTEN'
+alias clean='clear && colorscript -r'
 
 # VPN
-alias vpnon="sudo wg-quick up LY530-Manjaro"
-alias vpnoff="sudo wg-quick down LY530-Manjaro"
+alias vpnon='sudo wg-quick up RPi4'
+alias vpnoff='sudo wg-quick down RPi4'
+

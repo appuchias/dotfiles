@@ -120,3 +120,4 @@ export PATH="$PATH:/home/appu/.local/bin"
 export PATH="$PATH:/usr/bin/core_perl:/home/appu/.local/bin/"
 #eval "$(starship init bash)"
 
+. "$HOME/.cargo/env"
