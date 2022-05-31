@@ -1,0 +1,44 @@
+[Dolphin FM]
+Description=Dolphin FM
+ignoregeometry=true
+ignoregeometryrule=3
+position=2490,275
+positionrule=3
+size=1419,913
+sizerule=3
+title=Home — Dolphin
+titlematch=1
+wmclass=dolphin dolphin
+wmclasscomplete=true
+wmclassmatch=1
+
+[System Settings]
+Description=System Settings
+position=2545,299
+positionrule=6
+size=1309,865
+sizerule=6
+title=Quick Settings — System Settings
+titlematch=1
+wmclass=systemsettings systemsettings
+wmclasscomplete=true
+wmclassmatch=1
+
+[Window settings for Spotify]
+Description=Window settings for Spotify
+desktops=825e1fcb-440c-49ad-b467-d6662a92b27f
+desktopsrule=3
+fullscreenrule=3
+ignoregeometry=true
+ignoregeometryrule=6
+maximizehorizrule=3
+maximizevertrule=3
+position=160,436
+positionrule=3
+size=1600,927
+sizerule=3
+title=Spotify
+types=1
+wmclass=spotify spotify
+wmclasscomplete=true
+wmclassmatch=1
