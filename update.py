@@ -40,7 +40,7 @@ def main(root, backup):
         os.system(f"cp -v {ROOT_DIR / file} {BK_DIR / file}")
 
     for folder in backed_folders:
-        os.system(f"cp -vr {ROOT_DIR / folder} {BK_DIR / folder}")
+        os.system(f"cp -vr {ROOT_DIR / folder} {BK_DIR}")
 
     print("\n\n\n --- TAR --- ")
     sleep(0.2)
