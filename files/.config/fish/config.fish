@@ -24,8 +24,9 @@ end
 
 # Custom greeting
 function fish_greeting
+    #colorscript -e colorview
     colorscript random
-    echo ""
+    #echo ""
 end
 
 # ENV
