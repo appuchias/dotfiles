@@ -36,6 +36,8 @@ def main(root, backup):
 
     print("\n\n\n --- CP FILES/FOLDERS --- ")
     sleep(0.2)
+    # Clean files/ before copying
+    os.system(f"rm -r {BK_DIR}/*")
     for file in backed_files:
         os.system(f"cp -v {ROOT_DIR / file} {BK_DIR / file}")
 
