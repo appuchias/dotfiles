@@ -38,15 +38,18 @@ def main(root, backup):
     sleep(0.2)
     # Clean files/ before copying
     os.system(f"rm -r {BK_DIR}/*")
+
+    # Files
     for file in backed_files:
         os.system(f"cp -v {ROOT_DIR / file} {BK_DIR / file}")
 
+    # Folders
     for folder in backed_folders:
-        os.system(f"cp -vr {ROOT_DIR / folder} {BK_DIR}")
+        os.system(f"cp -vr {ROOT_DIR / folder} {BK_DIR / '.config'}")
 
     print("\n\n\n --- TAR --- ")
     sleep(0.2)
-    os.system(f"tar czf /home/appu/.dotfiles/files0.tgz /home/appu/.dotfiles/files/")
+    os.system(f"tar czvf /home/appu/.dotfiles/TGZ/files0.tgz /home/appu/.dotfiles/files/")
 
 
 if __name__ == "__main__":
