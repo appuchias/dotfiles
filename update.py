@@ -17,6 +17,7 @@ def main(root, backup):
         ".bash_profile",
         ".dir_colors",
         ".config/starship.toml",
+        ".vimrc",
     ]
 
     backed_folders = [
