@@ -41,3 +41,13 @@ function fuck -d "Correct your previous console command"
     builtin history merge
   end
 end
+
+# Encrypt and decrypt tar
+function tarenc -d "Encrypt and compress .tar.gz"
+  tar -czf - $argv | openssl enc -e -aes256 -pbkdf2 -out $argv[1].tgz
+end
+function tardec -d "Decrypt and uncompress .tar.gz"
+  mkdir tarout
+  openssl enc -d -aes256 -pbkdf2 -in $argv | tar xz -C tarout
+end
+

@@ -27,12 +27,16 @@ alias rm='trash'
 # Efficiency
 alias la='ls -a'
 alias ll='ls -lFh'
-alias lal='ls -alFh'
+alias lal='ls -AlFh'
 alias lt='ls --tree'
 alias ltl='ls -l --tree'
-alias latl='ls -al --tree --depth 2'
+alias latl='ls -Al --tree --depth 2'
 alias g='git'
 alias gs='git status'
+alias gc='git commit'
+alias gp='git push'
+alias rs='rsync -avz --progress --human-readable'
+alias df='df -h'
 
 # Tools aliases
 alias spdt='speedtest'
@@ -51,9 +55,11 @@ alias please='sudo'
 alias sctl='sudo systemctl'
 alias sfl='sudo fdisk -l'
 alias ports='netstat -lntu | grep LISTEN'
-alias clean='clear && colorscript -r'
+alias clean='cd && clear && colorscript -r'
 
 # VPN
-alias vpnon='sudo wg-quick up RPi4'
-alias vpnoff='sudo wg-quick down RPi4'
+alias vpnon='sudo wg-quick up RPi4_LY530Arch'
+alias vpnoff='sudo wg-quick down RPi4_LY530Arch'
+alias vpn='sudo wg-quick up'
+alias novpn='sudo wg-quick down'
 

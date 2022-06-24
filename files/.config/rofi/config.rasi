@@ -1,6 +1,6 @@
 configuration {
 	modi: "window,run,ssh,drun,combi,filebrowser,calc:/home/appu/.config/rofi/scripts/rofi-calculator.sh";
-	font: "Comic Code NF 10";
+	font: "Comic Code NF 11";
 	combi-modi: "window,drun,ssh";
 	location: 0;
 	// yoffset: 0;
@@ -51,10 +51,10 @@ configuration {
 	window-thumbnail: false;
 	// drun-use-desktop-cache: false;
 	// drun-reload-desktop-cache: false;
-	// normalize-match: false;
+	normalize-match: true;
 	// steal-focus: false;
 	// application-fallback-icon: ;
-	// pid: "/run/user/1000/rofi.pid";
+	pid: "/run/user/1000/rofi.pid";
 	// display-window: ;
 	// display-windowcd: ;
 	// display-run: ;
@@ -149,3 +149,4 @@ configuration {
 
 // @theme "/usr/share/rofi/themes/Monokai.rasi"
 @theme "/home/appu/.config/rofi/themes/TomorrowNight.rasi"
+// @theme "/home/appu/.config/rofi/themes/dt-dmenu.rasi"
