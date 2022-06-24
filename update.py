@@ -25,7 +25,8 @@ def main(root, backup):
         ".config/fish",
         ".config/htop",
         ".config/alacritty",
-        ".config/rofi"
+        ".config/rofi",
+        ".config/awesome",
     ]
 
     print(" --- CYCLE TGZs --- ")
