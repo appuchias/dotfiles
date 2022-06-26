@@ -11,7 +11,7 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
-theme.font          = "Fira Sans NF 8"
+theme.font          = "Fira Sans 9"
 
 theme.bg_normal     = "#1d1f21"
 theme.bg_focus      = "#282a2e"
@@ -24,7 +24,7 @@ theme.fg_focus      = "#c5c8c6"
 theme.fg_urgent     = "#c5c8c6"
 theme.fg_minimize   = "#c5c8c6"
 
-theme.useless_gap   = dpi(2)
+theme.useless_gap   = dpi(1)
 theme.border_width  = dpi(0)
 theme.border_normal = "#000000"
 theme.border_focus  = "#535d6c"
@@ -41,7 +41,8 @@ theme.border_marked = "#91231c"
 -- prompt_[fg|bg|fg_cursor|bg_cursor|font]
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
 -- Example:
---theme.taglist_bg_focus = "#ff0000"
+theme.taglist_bg_focus = "#81a2be"
+theme.taglist_fg_focus = "#1d1f21"
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(4)
