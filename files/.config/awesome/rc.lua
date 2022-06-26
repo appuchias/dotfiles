@@ -61,8 +61,8 @@ local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.ge
 beautiful.init(theme_path)
 
 -- Wallpaper path
-local wallpaper_path = "/home/appu/Pictures/backgrounds/Mountains/geoffrey-price-8CuVNSQ3RS4-unsplash.jpg"
-beautiful.get().wallpaper = wallpaper_path
+-- local wallpaper_path = "/home/appu/Pictures/backgrounds/Mountains/geoffrey-price-8CuVNSQ3RS4-unsplash.jpg"
+-- beautiful.get().wallpaper = wallpaper_path
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "kitty"
@@ -128,6 +128,11 @@ keyboard_layout = awful.widget.keyboardlayout()
 -- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
+separator = wibox.widget {
+  orientation = vertical,
+  forced_width = 4,
+  widget = wibox.widget.separator,
+}
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -228,6 +233,7 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             awesome_launcher,
+            separator,
             s.mytaglist,
             s.mypromptbox,
         },
@@ -271,8 +277,10 @@ globalkeys = gears.table.join(
               {description = "Run rofi",                        group = "programs"}),
     awful.key({ modkey, "Shift"   }, "Return",  function () awful.spawn(rofi_combi)                     end,
               {description = "Run rofi-multi",                  group = "programs"}),
-    awful.key({modkey, "Shift"    }, "s",       function () awful.spawn(screenshot)                     end,
+    awful.key({ modkey, "Shift"    }, "s",      function () awful.spawn(screenshot)                     end,
               {description = "Take a screenshot",               group = "programs"}),
+    awful.key({ modkey, "Shift"    }, "r",      function () awful.spawn("openrgb -p Huntsman")          end,
+              {description = "Set the keyboard properly",       group = "programs"}),
 
     -- Tag toggling
     awful.key({ modkey,           }, "Left",    awful.tag.viewprev,
@@ -302,11 +310,11 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "u",       function () awful.client.urgent:jumpto()                end,
               {description = "Jump to urgent client",           group = "client"}),
 
-    -- Sizing
-    awful.key({ modkey,           }, "h",       function () awful.tag.incmwfact( 0.05)                  end,
-              {description = "increase master width factor",    group = "client"}),
-    awful.key({ modkey,           }, "l",       function () awful.tag.incmwfact(-0.05)                  end,
-              {description = "decrease master width factor",    group = "client"}),
+    -- -- Sizing
+    -- awful.key({ modkey,           }, "h",       function () awful.tag.incmwfact( 0.05)                  end,
+    --           {description = "increase master width factor",    group = "client"}),
+    -- awful.key({ modkey,           }, "l",       function () awful.tag.incmwfact(-0.05)                  end,
+    --           {description = "decrease master width factor",    group = "client"}),
 
     -- Awesome
     awful.key({ modkey, "Control" }, "r",       awesome.restart,
@@ -317,6 +325,10 @@ globalkeys = gears.table.join(
               {description="Show help",                         group="awesome"}),
     awful.key({ modkey, "Shift"   }, "Up",      function () awful.screen.focus_relative(1)              end,
               {description = "Toggle focused screen",           group = "awesome"}),
+    awful.key({ modkey,           }, "l",       function () awful.spawn("lock")                         end,
+              {description = "Lock screen",                     group = "awesome"}),
+    awful.key({ modkey, "Shift"   }, "x",       function () awful.spawn("systemctl suspend")            end,
+              {description = "Suspend pc",                      group = "awesome"}),
 
     -- Music controls
     awful.key({ }, "XF86AudioPlay",             function () awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause", false) end,
