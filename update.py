@@ -27,6 +27,7 @@ def main(root, backup):
         ".config/alacritty",
         ".config/rofi",
         ".config/awesome",
+        # ".config/picom",
     ]
 
     print(" --- CYCLE TGZs --- ")
