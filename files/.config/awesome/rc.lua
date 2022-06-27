@@ -17,10 +17,14 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
-
+-- Dpi setting
+local dpi = require('beautiful').xresources.apply_dpi
+-- Lain
+local lain = require("lain")
 
 -- {{{ My imports
 require("autostart")
+local spotify = require("modules.spotify")
 -- }}}
 
 
@@ -66,15 +70,16 @@ beautiful.init(theme_path)
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "kitty"
-local editor = os.getenv("EDITOR") or "vim"
-local editor_cmd = terminal .. " -e " .. editor
-local browser = "firefox"
-local spotify = "spotify"
-local file_explorer = "thunar"
-local discord = "discord"
-local screenshot = "flameshot gui"
-local rofi = "rofi -show run"
-local rofi_combi = "rofi -show combi"
+-- local editor = os.getenv("EDITOR") or "nvim"
+local editor = "nvim"
+local cmd_editor = terminal .. " -e " .. editor
+local cmd_browser = "firefox"
+local cmd_spotify = "spotify"
+local cmd_file_explorer = "thunar"
+local cmd_discord = "discord"
+local cmd_screenshot = "flameshot gui"
+local cmd_rofi = "rofi -show run"
+local cmd_rofi_combi = "rofi -show combi"
 
 -- Default modkey.
 modkey = "Mod4"
@@ -82,8 +87,8 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
     -- awful.layout.suit.floating,
-    -- awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
+    awful.layout.suit.tile,
+    -- awful.layout.suit.tile.left,
     -- awful.layout.suit.tile.bottom,
     -- awful.layout.suit.tile.top,
     awful.layout.suit.fair,
@@ -91,10 +96,10 @@ awful.layout.layouts = {
     -- awful.layout.suit.spiral,
     -- awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
+    -- awful.layout.suit.max.fullscreen,
     -- awful.layout.suit.magnifier,
     -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.corner.ne,
+    awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
 }
@@ -105,7 +110,7 @@ awful.layout.layouts = {
 awesome_menu = {
    { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
    { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "edit config", cmd_editor .. " " .. awesome.conffile },
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end },
 }
@@ -126,8 +131,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 keyboard_layout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+-- Create widgets
 separator = wibox.widget {
   orientation = vertical,
   forced_width = 4,
@@ -135,7 +139,7 @@ separator = wibox.widget {
 }
 
 -- Create a wibox for each screen and add it
-local taglist_buttons = gears.table.join(
+taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
                     awful.button({ modkey }, 1, function(t)
                                               if client.focus then
@@ -148,11 +152,11 @@ local taglist_buttons = gears.table.join(
                                                   client.focus:toggle_tag(t)
                                               end
                                           end),
-                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+                    awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end),
+                    awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end)
                 )
 
-local tasklist_buttons = gears.table.join(
+tasklist_buttons = gears.table.join(
                      awful.button({ }, 1, function (c)
                                               if c == client.focus then
                                                   c.minimized = true
@@ -175,6 +179,50 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
+
+mytextclock = wibox.widget{
+   widget = wibox.widget.textclock,
+   format = " %d %b %H:%M (%a) ",
+   refresh = 30
+}
+calendarwidget = lain.widget.cal({
+  followtag = true,
+  week_number = "left",
+  attach_to = { mytextclock },
+  notification_preset = {
+    font = beautiful.font_big,
+    fg = beautiful.fg_normal,
+    bg = beautiful.bg_focus
+  }
+})
+
+separator = wibox.widget {
+  widget       = wibox.widget.separator,
+  orientation  = "horizontal",
+  forced_width = 30,
+  color        = beautiful.separator,
+  shape        = gears.shape.powerline
+}
+
+separator_empty = wibox.widget {
+  widget       = wibox.widget.separator,
+  orientation  = "horizontal",
+  forced_width = 10,
+  color        = beautiful.bg_normal,
+}
+
+separator_reverse = wibox.widget {
+  widget       = wibox.widget.separator,
+  orientation  = "horizontal",
+  forced_width = 30,
+  span_ratio   = 0.7,
+  color        = beautiful.separator,
+  set_shape    = function(cr, width, height)
+    gears.shape.powerline(cr, width, height, (height / 2) * (-1))
+  end
+}
+
+-- Wallpaper painter function
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -194,11 +242,10 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
-    -- Each screen has its own tag table.
-    -- awful.tag({ "1", "2", "3", "4", "5" }, s, awful.layout.layouts[1])
-    local names = { "main", "www", "office", "str", "int" }
-    local l = awful.layout .suit
-    awful.tag(names, s, l.tile.left)
+    -- Tags
+    local names = { "I", "II", "III", "IV", "V" }
+    local l = awful.layout.suit
+    awful.tag(names, s, l.tile)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -211,17 +258,94 @@ awful.screen.connect_for_each_screen(function(s)
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
+    if screen:count() > 1 then
+      taglist_width = dpi(200)
+    else
+      taglist_width = dpi(300)
+    end
     s.mytaglist = awful.widget.taglist {
-        screen  = s,
-        filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
+      screen  = s,
+      filter  = awful.widget.taglist.filter.all,
+      style   = {
+          shape = gears.shape.powerline,
+      },
+      layout   = {
+          spacing = -10,
+          spacing_widget = {
+              color  = beautiful.bg_normal,
+              shape  = gears.shape.powerline,
+              widget = wibox.widget.separator,
+          },
+          layout  = wibox.layout.flex.horizontal,
+          forced_width = taglist_width
+      },
+      widget_template = {
+          {
+              {
+                  {
+                      id     = 'text_role',
+                      widget = wibox.widget.textbox,
+                  },
+                  layout = wibox.layout.flex.horizontal,
+              },
+              left  = 20,
+              right = 10,
+              widget = wibox.container.margin
+          },
+          id     = 'background_role',
+          widget = wibox.container.background,
+      },
+      buttons = taglist_buttons
     }
 
-    -- Create a tasklist widget
+    -- create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+      screen  = s,
+      filter  = awful.widget.tasklist.filter.currenttags,
+      style   = {
+          shape = gears.shape.powerline
+      },
+      layout   = {
+          spacing = -10,
+          spacing_widget = {
+              color  = beautiful.bg_normal,
+              shape  = gears.shape.powerline,
+              widget = wibox.widget.separator,
+          },
+          -- forced_width = taglist_width * 5,
+          layout  = wibox.layout.flex.horizontal,
+      },
+      widget_template = {
+          {
+              {
+                  -- {
+                  --     {
+                  --         id     = 'icon_role',
+                  --         widget = wibox.widget.imagebox,
+                  --     },
+                  --     margins = 2,
+                  --     widget  = wibox.container.margin,
+                  -- },
+                  -- {
+                      {
+                        id     = 'text_role',
+                        widget = wibox.widget.textbox,
+                      },
+                  --     strategy = "exact",
+                  --     widget = wibox.container.constraint,
+                  -- },
+                  -- spacing = dpi(-20),
+                  layout = wibox.layout.flex.horizontal,
+              },
+              left  = 12,
+              right = 12,
+              widget = wibox.container.margin
+          },
+          id     = 'background_role',
+          forced_width = nil,
+          widget = wibox.container.background,
+      },
+      buttons = tasklist_buttons
     }
 
     -- Create the wibox
@@ -232,17 +356,24 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            awesome_launcher,
-            separator,
+            -- awesome_launcher,
+            -- separator,
             s.mytaglist,
             s.mypromptbox,
+            separator,
+            s.mytasklist,
+            separator,
         },
-        s.mytasklist, -- Middle widget
+        -- s.mytasklist, -- Middle widget
+        separator_empty,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            separator_reverse,
             wibox.widget.systray(),
+            -- separator_reverse,
             keyboard_layout,
             mytextclock,
+            separator_reverse,
             s.mylayoutbox,
         },
     }
@@ -263,24 +394,26 @@ globalkeys = gears.table.join(
     -- Standard programss
     awful.key({ modkey,           }, "Return",  function () awful.spawn(terminal)                       end,
               {description = "Open Terminal",                   group = "programs"}),
-    awful.key({ modkey,           }, "f",       function () awful.spawn(browser)                        end,
+    awful.key({ modkey,           }, "f",       function () awful.spawn(cmd_browser)                    end,
               {description = "Open Web browser",                group = "programs"}),
-    awful.key({ modkey,           }, "e",       function () awful.spawn(file_explorer)                  end,
+    awful.key({ modkey,           }, "e",       function () awful.spawn(cmd_file_explorer)              end,
               {description = "Open File explorer",              group = "programs"}),
-    awful.key({ modkey,           }, "s",       function () awful.spawn(spotify)                        end,
+    awful.key({ modkey,           }, "s",       function () awful.spawn(cmd_spotify)                    end,
               {description = "Open Spotify",                    group = "programs"}),
-    awful.key({ modkey,           }, "d",       function () awful.spawn(discord)                        end,
+    awful.key({ modkey,           }, "d",       function () awful.spawn(cmd_discord)                    end,
               {description = "Open Discord",                    group = "programs"}),
     awful.key({ modkey,           }, "v",       function () awful.spawn("code")                         end,
               {description = "Open VS Code",                    group = "programs"}),
-    awful.key({ modkey            },  "r",      function () awful.spawn(rofi)                           end,
+    awful.key({ modkey            },  "r",      function () awful.spawn(cmd_rofi)                       end,
               {description = "Run rofi",                        group = "programs"}),
-    awful.key({ modkey, "Shift"   }, "Return",  function () awful.spawn(rofi_combi)                     end,
+    awful.key({ modkey, "Shift"   }, "Return",  function () awful.spawn(cmd_rofi_combi)                 end,
               {description = "Run rofi-multi",                  group = "programs"}),
-    awful.key({ modkey, "Shift"    }, "s",      function () awful.spawn(screenshot)                     end,
+    awful.key({ modkey, "Shift"    }, "s",      function () awful.spawn(cmd_screenshot)                 end,
               {description = "Take a screenshot",               group = "programs"}),
     awful.key({ modkey, "Shift"    }, "r",      function () awful.spawn("openrgb -p Huntsman")          end,
               {description = "Set the keyboard properly",       group = "programs"}),
+    awful.key({ modkey,            }, "b",      function () awful.spawn("kitty -e btop")                end,
+              {description = "Open btop in a kitty term",       group = "programs"}),
 
     -- Tag toggling
     awful.key({ modkey,           }, "Left",    awful.tag.viewprev,
@@ -291,9 +424,11 @@ globalkeys = gears.table.join(
               {description = "Go to prev tab",                  group = "tag"}),
 
     -- Client cycling
-    awful.key({ modkey,           }, "Up",      function () awful.client.focus.history.previous()       end,
+    awful.key({ modkey,           }, "Up",      function () awful.client.focus.byidx(-1)                end,
               { description = "Cycle through clients",          group = "client"}),
-    awful.key({ "Mod1",           }, "Tab",     function () awful.client.focus.history.previous()       end,
+    awful.key({ modkey,           }, "Down",    function () awful.client.focus.byidx( 1)                end,
+              { description = "Cycle through clients",          group = "client"}),
+    awful.key({ "Mod1",           }, "Tab",     function () awful.client.focus.byidx( 1)                end,
               { description = "Cycle through clients",          group = "client"}),
 
     -- Layout manipulation
@@ -309,12 +444,6 @@ globalkeys = gears.table.join(
               {description = "Change layout",                   group = "client"}),
     awful.key({ modkey,           }, "u",       function () awful.client.urgent:jumpto()                end,
               {description = "Jump to urgent client",           group = "client"}),
-
-    -- -- Sizing
-    -- awful.key({ modkey,           }, "h",       function () awful.tag.incmwfact( 0.05)                  end,
-    --           {description = "increase master width factor",    group = "client"}),
-    -- awful.key({ modkey,           }, "l",       function () awful.tag.incmwfact(-0.05)                  end,
-    --           {description = "decrease master width factor",    group = "client"}),
 
     -- Awesome
     awful.key({ modkey, "Control" }, "r",       awesome.restart,
@@ -338,7 +467,9 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioPrev",             function () awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous", false) end,
               {description = "Prev song - Spotify",             group = "media"}),
     awful.key({ }, "XF86AudioStop",             function () awful.util.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Stop", false) end,
-              {description = "Stop playback - Spotify",          group = "media"}),
+              {description = "Stop playback - Spotify",         group = "media"}),
+    awful.key({ }, "XF86MonBrightnessUp",       function() set_brightness('5%+') end),
+    awful.key({ }, "XF86MonBrightnessDown",     function() set_brightness('5%-') end),
 
     -- Restore minimized window
     awful.key({ modkey, "Control" }, "n",
@@ -362,7 +493,7 @@ globalkeys = gears.table.join(
               return
           end
           -- get previous tag (modulo 9 excluding 0 to wrap from 1 to 9)
-          local tag = client.focus.screen.tags[(t.index - 2) % 9 + 1]
+          local tag = client.focus.screen.tags[(t.index - 2) % 5 + 1]
           awful.client.movetotag(tag)
           awful.tag.viewprev()
       end,
@@ -375,7 +506,7 @@ globalkeys = gears.table.join(
               return
           end
           -- get next tag (modulo 9 excluding 0 to wrap from 9 to 1)
-          local tag = client.focus.screen.tags[(t.index % 9) + 1]
+          local tag = client.focus.screen.tags[(t.index % 5) + 1]
           awful.client.movetotag(tag)
           awful.tag.viewnext()
       end,
@@ -442,14 +573,14 @@ clientkeys = gears.table.join(
 
 -- Mouse + Keyboard
 clientbuttons = gears.table.join(
-    awful.button({ }, 1, function (c)
+    awful.button({ }, 1,                        function (c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
     end),
-    awful.button({ modkey }, 1, function (c)
+    awful.button({ modkey }, 1,                 function (c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
         awful.mouse.client.move(c)
     end),
-    awful.button({ modkey }, 2, function (c)
+    awful.button({ modkey }, 2,                 function (c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
         awful.mouse.client.resize(c)
     end)
@@ -522,16 +653,15 @@ awful.rules.rules = {
        end
      },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    -- Set Spotify to always map on the tag named "2" on screen 1.
+    { rule = { class = "Spotify" },
+      properties = { screen = 2, tag = "II" } },
 }
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c)
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
+    -- Set the windows at the slave -> put it at the end of others instead of setting it master.
     -- if not awesome.startup then awful.client.setslave(c) end
 
     if awesome.startup
@@ -587,6 +717,7 @@ client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
 end)
 
+-- Change border color on changed focus
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
