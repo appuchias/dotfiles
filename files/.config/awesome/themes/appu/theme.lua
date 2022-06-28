@@ -7,80 +7,84 @@ local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 local shape = require("gears.shape")
 local theme_path = "/home/appu/.config/awesome/themes/appu/"
+local wallpaper_path = "/home/appu/Pictures/backgrounds/Mountains/anna-scarfiello-Pxf5syDVuxQ-unsplash.jpg"
 
--- Some colors - Tomorrow night
-local background = "#1d1f21"
-local current_line = "#282a2e"
-local selection = "#373b41"
-local foreground = "#c5c8c6"
-local comment = "#969896"
-local red = "#cc6666"
-local orange = "#de935f"
-local yellow = "#f0c674"
-local green = "#b5bd68"
-local aqua = "#8abeb7"
-local blue = "#81a2be"
-local purple = "#b294bb"
 
 local theme = {}
 local t = theme
 
+-- Some colors - Tomorrow night
+t.background = "#1d1f21"
+t.current_line = "#282a2e"
+t.selection = "#373b41"
+t.foreground = "#c5c8c6"
+t.comment = "#969896"
+t.red = "#cc6666"
+t.orange = "#de935f"
+t.yellow = "#f0c674"
+t.green = "#b5bd68"
+t.aqua = "#8abeb7"
+t.blue = "#81a2be"
+t.purple = "#b294bb"
+
 t.font                                  = "Fira Sans 8"
 t.emoji_font                            = "NotoEmoji Nerd Font"
 
-t.bg_normal                             = background
-t.bg_focus                              = blue
-t.bg_urgent                             = red
-t.bg_minimize                           = current_line
-t.bg_systray                            = t.bg_normal
-
-t.fg_normal                             = foreground
-t.fg_focus                              = background
-t.fg_urgent                             = foreground
-t.fg_minimize                           = comment
-
-t.useless_gap                           = dpi(2)
-t.border_width                          = dpi(2)
-t.border_normal                         = current_line
-t.border_focus                          = blue
-t.border_marked                         = orange
-
-t.separator                             = blue
-
--- Taglist
 local tagshape                          = function(cr, width, height)
     shape.powerline(cr,width,height)
 end
+local ntf_shape                         = function(cr, width, height)
+   shape.partially_rounded_rect(cr, width, height, true, false, true, true, 18)
+end
+
+t.bg_normal                             = t.background
+t.bg_focus                              = t.blue
+t.bg_urgent                             = t.red
+t.bg_minimize                           = t.current_line
+t.bg_systray                            = t.bg_normal
+
+t.fg_normal                             = t.foreground
+t.fg_focus                              = t.background
+t.fg_urgent                             = t.foreground
+t.fg_minimize                           = t.comment
+
+-- Generic
+t.useless_gap                           = dpi(2)
+t.border_width                          = dpi(2)
+t.border_normal                         = t.current_line
+t.border_focus                          = t.blue
+t.border_marked                         = t.orange
+
+t.separator                             = t.blue
+
+-- Taglist
 t.taglist_shape                         = tagshape
 t.taglist_shape_focus                   = tagshape
-t.taglist_shape_border_width            = 2
+t.taglist_shape_border_width            = dpi(2)
 t.taglist_shape_border_color            = t.separator
 t.taglist_bg_focus                      = t.bg_focus
 t.taglist_fg_focus                      = t.fg_focus
-t.taglist_shape_border_color_urgent     = red
+t.taglist_shape_border_color_urgent     = t.red
 t.taglist_font                          = "Fira Code NF"
 
 -- Notifications
 t.notification_opacity                  = 0.9
 t.notification_fg                       = t.fg_normal
 t.notification_bg                       = t.bg_normal
-t.notification_border_color             = red
+t.notification_border_color             = t.red
 t.notification_border_width             = dpi(2)
 t.notification_margin                   = dpi(4)
 t.notification_icon_size                = dpi(64)
 t.notification_max_width                = dpi(600)
-local ntf_shape                         = function(cr, width, height)
-   shape.partially_rounded_rect(cr, width, height, true, false, true, true, 18)
-end
 t.notification_shape                    = ntf_shape
 
 -- Menu
 t.menu_submenu_icon                     = theme_path .. "submenu.png"
-t.menu_height                           = dpi(15)
+t.menu_height                           = dpi(45)
 t.menu_width                            = dpi(100)
 
 -- Wibar
-t.wibar_bg                              =   background
+t.wibar_bg                              = t.background
 
 -- Client modifications
 t.maximized_hide_border                 = true
@@ -88,7 +92,7 @@ t.fullscreen_hide_border                = true
 t.master_width_factor                   = 0.5
 
 -- Wallpaper
-t.wallpaper                             = "/home/appu/Pictures/backgrounds/Mountains/geoffrey-price-8CuVNSQ3RS4-unsplash.jpg"
+t.wallpaper                             = wallpaper_path
 
 -- Layout images
 t.layout_fairh                          = theme_path .. "layouts/fairhw.png"

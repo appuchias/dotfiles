@@ -24,7 +24,9 @@ local lain = require("lain")
 
 -- {{{ My imports
 require("autostart")
-local spotify = require("modules.spotify")
+-- local spotify = require("modules.spotify")
+local vars = require("modules.rc_vars")
+-- local globalkeys = require("modules.rc_keys")
 -- }}}
 
 
@@ -56,33 +58,33 @@ end
 -- {{{ Variable definitions
 
 -- Themes define colours, icons, font and wallpapers.
-local themes = {
-    "appu",
-    "zenburn",
-}
-local chosen_theme = themes[1]
-local theme_path = string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme)
+local theme_path = string.format("%s/.config/awesome/themes/appu/theme.lua", os.getenv("HOME"))
 beautiful.init(theme_path)
 
--- Wallpaper path
--- local wallpaper_path = "/home/appu/Pictures/backgrounds/Mountains/geoffrey-price-8CuVNSQ3RS4-unsplash.jpg"
--- beautiful.get().wallpaper = wallpaper_path
-
--- This is used later as the default terminal and editor to run.
-local terminal = "kitty"
+-- local terminal = "kitty"
 -- local editor = os.getenv("EDITOR") or "nvim"
-local editor = "nvim"
-local cmd_editor = terminal .. " -e " .. editor
-local cmd_browser = "firefox"
-local cmd_spotify = "spotify"
-local cmd_file_explorer = "thunar"
-local cmd_discord = "discord"
-local cmd_screenshot = "flameshot gui"
-local cmd_rofi = "rofi -show run"
-local cmd_rofi_combi = "rofi -show combi"
+-- local cmd_editor = terminal .. " -e " .. editor
+-- local cmd_spotify = "spotify"
+-- local cmd_file_explorer = "thunar"
+-- local cmd_browser = "firefox"
+-- local cmd_discord = "discord"
+-- local cmd_screenshot = "flameshot gui"
+-- local cmd_rofi = "rofi -show run"
+-- local cmd_rofi_combi = "rofi -show combi"
+
+local terminal = vars.terminal
+-- local editor = vars.editor
+local cmd_browser = vars.cmd_browser
+local cmd_spotify = vars.spotify
+local cmd_file_explorer = vars.cmd_file_explorer
+local cmd_discord = vars.cmd_discord
+-- local cmd_screenshot = vars.cmd_screenshot
+local cmd_rofi = vars.cmd_rofi
+local cmd_rofi_combi = vars.cmd_rofi_combi
 
 -- Default modkey.
-modkey = "Mod4"
+-- modkey = "Mod4"
+local modkey = vars.modkey
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -106,23 +108,6 @@ awful.layout.layouts = {
 -- }}}
 
 -- {{{ Menu
--- Create a launcher widget and a main menu
-awesome_menu = {
-   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", cmd_editor .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end },
-}
-
-right_menu = awful.menu({ items = { { "awesome", awesome_menu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
-
-awesome_launcher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = right_menu })
-
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
@@ -132,11 +117,6 @@ keyboard_layout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create widgets
-separator = wibox.widget {
-  orientation = vertical,
-  forced_width = 4,
-  widget = wibox.widget.separator,
-}
 
 -- Create a wibox for each screen and add it
 taglist_buttons = gears.table.join(
@@ -191,8 +171,9 @@ calendarwidget = lain.widget.cal({
   attach_to = { mytextclock },
   notification_preset = {
     font = beautiful.font_big,
-    fg = beautiful.fg_normal,
-    bg = beautiful.bg_focus
+    fg = beautiful.fg_focus,
+    bg = beautiful.bg_focus,
+    border_color = beautiful.separator,
   }
 })
 
@@ -209,6 +190,13 @@ separator_empty = wibox.widget {
   orientation  = "horizontal",
   forced_width = 10,
   color        = beautiful.bg_normal,
+}
+
+separator_flex = wibox.widget {
+  widget       = wibox.widget.separator,
+  orientation  = "horizontal",
+  color        = beautiful.bg_normal,
+  layout       = wibox.layout.flex.horizontal
 }
 
 separator_reverse = wibox.widget {
@@ -231,7 +219,7 @@ local function set_wallpaper(s)
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
-        gears.wallpaper.maximized(wallpaper, s, true)
+        gears.wallpaper.maximized(wallpaper, s, false)
     end
 end
 
@@ -258,11 +246,7 @@ awful.screen.connect_for_each_screen(function(s)
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
-    if screen:count() > 1 then
-      taglist_width = dpi(200)
-    else
-      taglist_width = dpi(300)
-    end
+    taglist_width = dpi(200)
     s.mytaglist = awful.widget.taglist {
       screen  = s,
       filter  = awful.widget.taglist.filter.all,
@@ -313,36 +297,30 @@ awful.screen.connect_for_each_screen(function(s)
               widget = wibox.widget.separator,
           },
           -- forced_width = taglist_width * 5,
-          layout  = wibox.layout.flex.horizontal,
+          layout  = wibox.layout.fixed.horizontal,
       },
       widget_template = {
           {
               {
-                  -- {
-                  --     {
-                  --         id     = 'icon_role',
-                  --         widget = wibox.widget.imagebox,
-                  --     },
-                  --     margins = 2,
-                  --     widget  = wibox.container.margin,
-                  -- },
-                  -- {
+                  {
                       {
-                        id     = 'text_role',
-                        widget = wibox.widget.textbox,
+                          id     = "icon_role",
+                          widget = wibox.widget.imagebox,
                       },
-                  --     strategy = "exact",
-                  --     widget = wibox.container.constraint,
-                  -- },
-                  -- spacing = dpi(-20),
-                  layout = wibox.layout.flex.horizontal,
+                      margins = 2,
+                      widget  = wibox.container.margin,
+                  },
+                  {
+                      id     = 'text_role',
+                      widget = wibox.widget.textbox,
+                  },
+                  layout = wibox.layout.fixed.horizontal,
               },
               left  = 12,
-              right = 12,
-              widget = wibox.container.margin
+              right = 18,
+              widget = wibox.container.margin,
           },
           id     = 'background_role',
-          forced_width = nil,
           widget = wibox.container.background,
       },
       buttons = tasklist_buttons
@@ -357,20 +335,23 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             -- awesome_launcher,
-            -- separator,
+            separator,
             s.mytaglist,
             s.mypromptbox,
+            -- separator,
+            -- s.mytasklist,
+        },
+        {
+            layout = wibox.layout.align.horizontal,
             separator,
             s.mytasklist,
-            separator,
+            separator_flex,
         },
-        -- s.mytasklist, -- Middle widget
-        separator_empty,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             separator_reverse,
             wibox.widget.systray(),
-            -- separator_reverse,
+            separator_reverse,
             keyboard_layout,
             mytextclock,
             separator_reverse,
@@ -380,17 +361,16 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 -- }}}
 
--- {{{ Mouse bindings
-root.buttons(gears.table.join(
-    awful.button({ }, 3, function () right_menu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewnext),
-    awful.button({ }, 5, awful.tag.viewprev)
-))
--- }}}
+-- -- {{{ Mouse bindings
+-- root.buttons(gears.table.join(
+--     awful.button({ }, 3, function () right_menu:toggle() end),
+--     awful.button({ }, 4, awful.tag.viewnext),
+--     awful.button({ }, 5, awful.tag.viewprev)
+-- ))
+-- -- }}}
 
 -- Key bindings {{{
 globalkeys = gears.table.join(
-
     -- Standard programss
     awful.key({ modkey,           }, "Return",  function () awful.spawn(terminal)                       end,
               {description = "Open Terminal",                   group = "programs"}),
@@ -408,8 +388,14 @@ globalkeys = gears.table.join(
               {description = "Run rofi",                        group = "programs"}),
     awful.key({ modkey, "Shift"   }, "Return",  function () awful.spawn(cmd_rofi_combi)                 end,
               {description = "Run rofi-multi",                  group = "programs"}),
-    awful.key({ modkey, "Shift"    }, "s",      function () awful.spawn(cmd_screenshot)                 end,
-              {description = "Take a screenshot",               group = "programs"}),
+    -- awful.key({ modkey, "Shift"    }, "s",      function () awful.spawn(cmd_screenshot)                 end,
+    --           {description = "Take a screenshot",               group = "programs"}),
+    awful.key({                    }, "Print",  function () awful.spawn("flameshot gui")                end,
+              {description = "Region screenshot using fs GUI",  group = "programs"}),
+    awful.key({ modkey,            }, "Print",  function () awful.spawn("flameshot full")                 end,
+              {description = "Screenshot the full desktop",     group = "programs"}),
+    -- awful.key({ modkey, "Control"  }, "Print",  function () awful.spawn(cmd_screenshot)                 end,
+    --           {description = "Screenshot the current screen",   group = "programs"}),
     awful.key({ modkey, "Shift"    }, "r",      function () awful.spawn("openrgb -p Huntsman")          end,
               {description = "Set the keyboard properly",       group = "programs"}),
     awful.key({ modkey,            }, "b",      function () awful.spawn("kitty -e btop")                end,
@@ -456,6 +442,8 @@ globalkeys = gears.table.join(
               {description = "Toggle focused screen",           group = "awesome"}),
     awful.key({ modkey,           }, "l",       function () awful.spawn("lock")                         end,
               {description = "Lock screen",                     group = "awesome"}),
+    awful.key({ modkey, "Shift"   }, "l",       function () awful.spawn("qlock")                         end,
+              {description = "Quickly lock screen",             group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "x",       function () awful.spawn("systemctl suspend")            end,
               {description = "Suspend pc",                      group = "awesome"}),
 
